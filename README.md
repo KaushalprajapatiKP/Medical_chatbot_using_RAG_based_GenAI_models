@@ -1,1 +1,1 @@
-# Medical_chatbot_using_RAG_based_GenAI_models
+# Medical chatbot using RAG based GenAI opensource models
