@@ -13,11 +13,11 @@ app = Flask(__name__)
 
 load_dotenv()
 
-# PINECONE_API_KEY=os.environ.get('PINECONE_API_KEY')
-# OPENAI_API_KEY=os.environ.get('OPENAI_API_KEY')
+PINECONE_API_KEY=os.environ.get('PINECONE_API_KEY')
+OPENAI_API_KEY=os.environ.get('OPENAI_API_KEY')
 
-# os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
-# os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
+os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 embeddings = download_hugging_face_embeddings()
 
@@ -49,18 +49,26 @@ rag_chain = create_retrieval_chain(retriever, question_answer_chain)
 def index():
     return render_template('chat_temp.html')
 
-
 @app.route("/get", methods=["GET", "POST"])
 def chat():
-    msg = request.form["msg"]
-    input = msg
-    print(input)
-    response = rag_chain.invoke({"input": msg})
-    print("Response : ", response["answer"])
-    return str(response["answer"])
+    try:
+        # Get the input message
+        msg = request.form.get("msg", "").strip().lower()
+
+        # Handle simple greetings
+        if msg in ["hey", "hello", "hi"]:
+            return jsonify({"response": "Hello! How can I assist you today?"})
+
+        # Invoke the RAG chain
+        response = rag_chain.invoke({"input": msg})
+        answer = response.get("answer", "I'm sorry, I couldn't find an answer to your question.")
+        
+        return jsonify({"response": answer})
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port= 8080, debug= True)
+    app.run(host="0.0.0.0", port= 5000, debug= True)
