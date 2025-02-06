@@ -15,3 +15,6 @@ EXPOSE 7860
 
 # Run the Flask app
 CMD ["python", "app.py"]
+
+docker run -e TRANSFORMERS_CACHE=/tmp/huggingface -e HF_HOME=/tmp/huggingface 
+
