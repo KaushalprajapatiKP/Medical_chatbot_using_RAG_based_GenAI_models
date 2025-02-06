@@ -9,4 +9,5 @@ langchain_community
 langchain_openai
 langchain_experimental
 sentence-transformers
+langchain-huggingface
 -e .
